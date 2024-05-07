@@ -11,7 +11,7 @@ class Model:
             trust_remote_code=True
         )
 
-    def __call__(self, sentences: List[str]):
+    def predict(self, sentences: List[str]):
         query_vectors = self._model.encode(sentences)
         return query_vectors
 
@@ -19,5 +19,5 @@ class Model:
 if __name__ == '__main__':
     model = Model()
     sentences = ['I love cats', 'I love dogs', 'I hate dogs']
-    vectors = model(sentences)
-    np.save('data/1.npy', vectors)
+    vectors = model.predict(sentences)
+    np.save('../data/1.npy', vectors)

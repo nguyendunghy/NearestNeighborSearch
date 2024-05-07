@@ -1,3 +1,5 @@
 packaging
 faiss-cpu
 sentence-transformers
+
+flask

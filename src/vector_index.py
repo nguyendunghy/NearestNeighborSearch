@@ -13,7 +13,7 @@ class FaissIndex:
 
     def build_index(self, quantizer, vectors, dim):
         # index = quantizer
-        index = faiss.IndexIVFFlat(quantizer, dim, 128)
+        index = faiss.IndexIVFFlat(quantizer, dim, 2)
         index.nprobe = 8
         assert not index.is_trained
         index.train(vectors)
