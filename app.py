@@ -1,12 +1,24 @@
 import time
+from argparse import ArgumentParser
+
 from flask import Flask, request, jsonify
 
 from src.model import Model
 from src.nearest_neighbor import NearestNeighbor
 
+
+def parse():
+    parser = ArgumentParser()
+    parser.add_argument('--npy-dir', default='./data/')
+    parser.add_argument('--metric', default='l2')
+    return parser.parse_args()
+
+
+args = parse()
+
 app = Flask(__name__)
 model = Model()
-nn = NearestNeighbor(vectors_dir='./data/', dim=384, metric='l2')
+nn = NearestNeighbor(vectors_dir=args.npy_dir, dim=384, metric=args.metric)
 
 
 @app.route("/")
