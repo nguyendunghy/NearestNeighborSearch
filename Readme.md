@@ -1,12 +1,21 @@
 # Instruction
 
-## №1 Increase swap space up to 256 GB
+Gpu is not necessary for this application.
+
+## №1 Increase swap space up to 1 TB with RAM memory
 
 https://askubuntu.com/questions/178712/how-to-increase-swap-space
 
 ## №2 Requirements
 
-### 2.1 Install pip
+### 2.1 Install python3.10 and pip
+
+```shell
+sudo apt-get update -y
+sudo apt install software-properties-common -y
+sudo add-apt-repository ppa:deadsnakes/ppa -y && sudo apt update -y
+sudo apt install python3.10 python3.10-venv python3.10-dev -y
+```
 
 ```shell 
 curl -sSL https://bootstrap.pypa.io/get-pip.py -o get-pip.py`
@@ -29,4 +38,4 @@ Command Line Arguments
 
 `--metric`: The metric used for data analysis. Allowed values: "l2", "cosine"
 
-##
+`--model_name_or_path` : The name of the model to use encoding text to vector

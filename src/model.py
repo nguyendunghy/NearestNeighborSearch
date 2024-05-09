@@ -5,10 +5,11 @@ from sentence_transformers import SentenceTransformer
 
 
 class Model:
-    def __init__(self):
+    def __init__(self, model_name_or_path: str) -> None:
         self._model = SentenceTransformer(
-            'sentence-transformers/all-MiniLM-L12-v2',
-            trust_remote_code=True
+            model_name_or_path,
+            trust_remote_code=True,
+            device='cpu'
         )
 
     def predict(self, sentences: List[str]):

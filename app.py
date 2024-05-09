@@ -11,13 +11,14 @@ def parse():
     parser = ArgumentParser()
     parser.add_argument('--npy-dir', default='./data/')
     parser.add_argument('--metric', default='l2')
+    parser.add_argument('--model_name_or_path', type=str, default='sentence-transformers/all-MiniLM-L12-v2')
     return parser.parse_args()
 
 
 args = parse()
 
 app = Flask(__name__)
-model = Model()
+model = Model(model_name_or_path=args.model_name_or_path)
 nn = NearestNeighbor(vectors_dir=args.npy_dir, dim=384, metric=args.metric)
 
 
@@ -41,4 +42,4 @@ def predict():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True, port=8080)
+    app.run(host='0.0.0.0', debug=False, port=8080)
