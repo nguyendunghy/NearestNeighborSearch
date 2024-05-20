@@ -5,11 +5,11 @@ from src.vector_index import FaissIndex
 
 class NearestNeighbor:
 
-    def __init__(self, vectors_dir, metric, dim=384):
+    def __init__(self, vectors_dir, metric, build_with_gpu=True, dim=384):
         self._dim = dim
         self._metric = metric
 
-        self._index = FaissIndex(vectors_dir, dim=self._dim, metric=metric)  # takes a lot of time
+        self._index = FaissIndex(vectors_dir, dim=self._dim, metric=metric, build_with_gpu=build_with_gpu)  # takes a lot of time
 
     def find(self, query_vectors):
         distances = self._index.query(query_vectors)

@@ -21,7 +21,7 @@ def load_data(npy_filename, metric):
     return vectors
 
 
-def build_ivf(vectors_dir, dim, metric):
+def build_ivf(vectors_dir, dim, metric, build_with_gpu):
     """
     load npy files and build index
     """
@@ -34,6 +34,13 @@ def build_ivf(vectors_dir, dim, metric):
     index = faiss.index_factory(dim, "IVF65536,Flat", metric)  # 65536
 
     index_ivf = faiss.extract_index_ivf(index)
+
+    if build_with_gpu:
+        index_flat = faiss.IndexFlatL2(dim)
+
+        res = faiss.StandardGpuResources()
+        clustering_index = faiss.index_cpu_to_gpu(res, 0, index_flat)  # 0 – № GPU
+        index_ivf.clustering_index = clustering_index
 
     train_vectors = vectors
     assert not index.is_trained
@@ -54,7 +61,7 @@ def build_ivf(vectors_dir, dim, metric):
 
 
 class FaissIndex:
-    def __init__(self, vectors_dir, dim, metric):
+    def __init__(self, vectors_dir, dim, metric, build_with_gpu: bool = True):
         self._dim = dim
         self._metric = metric
 
@@ -99,4 +106,4 @@ class FaissIndex:
 
 
 if __name__ == '__main__':
-    index = FaissIndex(vectors_dir='data', metric='l2', dim=384)
+    index = FaissIndex(vectors_dir='data', metric='l2', dim=384, build_with_gpu=True)

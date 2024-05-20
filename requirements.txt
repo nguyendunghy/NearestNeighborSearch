@@ -1,5 +1,5 @@
 packaging
-faiss-cpu
+faiss-gpu
 sentence-transformers
 
 flask

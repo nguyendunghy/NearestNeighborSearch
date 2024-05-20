@@ -2,4 +2,7 @@
 .idea/
 data/
 indexes/
+
 *.index
+*.npy
+*.json

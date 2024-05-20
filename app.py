@@ -12,6 +12,7 @@ def parse():
     parser.add_argument('--npy-dir', default='./data/')
     parser.add_argument('--metric', default='l2')
     parser.add_argument('--model_name_or_path', type=str, default='sentence-transformers/all-MiniLM-L12-v2')
+    parser.add_argument('--server', type=str, default='gpu', choices=['gpu', 'cpu'], required=True)
     return parser.parse_args()
 
 
@@ -19,7 +20,7 @@ args = parse()
 
 app = Flask(__name__)
 model = Model(model_name_or_path=args.model_name_or_path)
-nn = NearestNeighbor(vectors_dir=args.npy_dir, dim=384, metric=args.metric)
+nn = NearestNeighbor(vectors_dir=args.npy_dir, dim=384, metric=args.metric, build_with_gpu=args.server == 'gpu')
 
 
 @app.route("/")
