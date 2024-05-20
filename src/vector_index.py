@@ -42,6 +42,7 @@ def build_ivf(vectors_dir, dim, metric, build_with_gpu):
         clustering_index = faiss.index_cpu_to_gpu(res, 0, index_flat)  # 0 – № GPU
         index_ivf.clustering_index = clustering_index
 
+    print(f'Train index ... with gpu={build_with_gpu}')
     train_vectors = vectors
     assert not index.is_trained
     index.train(train_vectors)
