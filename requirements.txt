@@ -1,5 +1,5 @@
 packaging
-faiss-gpu
+faiss-gpu==1.7.2
 sentence-transformers
 
 flask

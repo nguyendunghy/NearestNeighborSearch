@@ -70,7 +70,7 @@ class FaissIndex:
         # 1. build index for every npy blocks
         ivf_filepaths = list(indexes_dir.glob('*.index'))
         if not Path('trained_block.index').exists():
-            build_ivf(vectors_dir, dim, metric)
+            build_ivf(vectors_dir, dim, metric, build_with_gpu)
 
         # 2. merge all ivf indexes into one
         if not Path("populated.index").exists():
