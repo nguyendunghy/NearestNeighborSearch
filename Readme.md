@@ -1,35 +1,47 @@
 # Instruction
 
 ## №1 Server requirements
- - RAM 64 GB. 
- - GPU with 8GB or more. If you don't have this, set flag server=cpu
- - HDD 2TB or more for store data.
+
+- RAM 64 GB.
+- GPU with 8GB or more. If you don't have this, set flag server=cpu
+- HDD 2TB or more for store data.
 
 ## №2 Requirements
 
-### 2.1 Install python3.10 and pip
+### Install Anaconda
+
+ ```
+curl -O https://repo.anaconda.com/archive/Anaconda3-2020.11-Linux-x86_64.sh
+bash Anaconda3-2020.11-Linux-x86_64.sh 
+ ```
+
+create env
 
 ```shell
-sudo apt-get update -y
-sudo apt install software-properties-common -y
-sudo add-apt-repository ppa:deadsnakes/ppa -y && sudo apt update -y
-sudo apt install python3.10 python3.10-venv python3.10-dev -y
+source ~/.bashrc # initialize conda
+conda create --name env1 python=3 # create new env
+conda activate env1 # activate existing env
 ```
 
-```shell 
-curl -sSL https://bootstrap.pypa.io/get-pip.py -o get-pip.py`
-python3 get-pip.py
+install requirements
+
+```shell
+conda install -c pytorch -c nvidia faiss-gpu=1.8.0
+conda install flask
+conda install -c conda-forge sentence-transformers
 ```
 
-### 2.2 Install requrements.txt
+Run server
 
-`python3 -m pip install -r requirements.txt`
+```shell
+conda run python app.py --npy-dir ../data --server gpu
+```
 
 ## №3 Running
 
 To run the application, execute the following command:
 
-`python3 app.py --npy-dir="./data/npy/" --metric="l2"`
+`conda run python app.py --npy-dir="./data/npy/" --metric="l2"`
 
 Command Line Arguments
 
@@ -39,11 +51,14 @@ Command Line Arguments
 
 `--model_name_or_path` : The name of the model to use encoding text to vector
 
-`--server`: Choose a backend that construct index. Gpu is fast in some times. Choices ['cpu','gpu']. 
+`--server`: Choose a backend that construct index. Gpu is fast in some times. Choices ['cpu','gpu'].
 
 # №4 Errors
-if you got an error like this: 
+
+if you got an error like this:
+
 ```
 Error in void faiss::OnDiskInvertedLists::do_mmap() at /project/faiss/faiss/invlists/OnDiskInvertedLists.cpp:287: Error: 'ptro != MAP_FAILED' failed: could not mmap merged_index.ivfdata: Invalid argument```
 ```
+
 just to try run script one more time.
