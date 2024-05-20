@@ -1,10 +1,9 @@
 # Instruction
 
-Gpu is not necessary for this application.
-
-## №1 Increase swap space up to 1 TB with RAM memory
-
-https://askubuntu.com/questions/178712/how-to-increase-swap-space
+## №1 Server requirements
+ - RAM 64 GB. 
+ - GPU with 8GB or more. If you don't have this, set flag server=cpu
+ - HDD 2TB or more for store data.
 
 ## №2 Requirements
 
@@ -39,3 +38,5 @@ Command Line Arguments
 `--metric`: The metric used for data analysis. Allowed values: "l2", "cosine"
 
 `--model_name_or_path` : The name of the model to use encoding text to vector
+
+`--server`: Choose a backend that construct index. Gpu is fast in some times. Choices ['cpu','gpu']. 

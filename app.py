@@ -9,10 +9,11 @@ from src.nearest_neighbor import NearestNeighbor
 
 def parse():
     parser = ArgumentParser()
-    parser.add_argument('--npy-dir', default='./data/')
-    parser.add_argument('--metric', default='l2')
+    parser.add_argument('--npy-dir', default='./data/', help='Path to the directory containing .npy files.')
+    parser.add_argument('--metric', default='l2', help='The metric used for data analysis.')
     parser.add_argument('--model_name_or_path', type=str, default='sentence-transformers/all-MiniLM-L12-v2')
-    parser.add_argument('--server', type=str, default='gpu', choices=['gpu', 'cpu'], required=True)
+    parser.add_argument('--server', type=str, default='gpu', choices=['gpu', 'cpu'], required=True,
+                        help='Choose a backend that construct index.')
     return parser.parse_args()
 
 
