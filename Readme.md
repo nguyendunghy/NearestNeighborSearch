@@ -40,3 +40,10 @@ Command Line Arguments
 `--model_name_or_path` : The name of the model to use encoding text to vector
 
 `--server`: Choose a backend that construct index. Gpu is fast in some times. Choices ['cpu','gpu']. 
+
+# №4 Errors
+if you got an error like this: 
+```
+Error in void faiss::OnDiskInvertedLists::do_mmap() at /project/faiss/faiss/invlists/OnDiskInvertedLists.cpp:287: Error: 'ptro != MAP_FAILED' failed: could not mmap merged_index.ivfdata: Invalid argument```
+
+just to try run script one more time.
