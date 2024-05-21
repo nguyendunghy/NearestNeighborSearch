@@ -34,7 +34,8 @@ conda install -c conda-forge sentence-transformers
 Run server
 
 ```shell
-conda run python app.py --npy-dir ../data --server gpu
+conda run --no-capture-output python app.py --npy-dir ../data --server gpu
+
 ```
 
 ## №3 Running
