@@ -19,7 +19,7 @@ create env
 
 ```shell
 source ~/.bashrc # initialize conda
-conda create --name env1 python=3 # create new env
+conda create --name env1 python=3.10 # create new env
 conda activate env1 # activate existing env
 ```
 
