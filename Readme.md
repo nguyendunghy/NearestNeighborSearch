@@ -5,6 +5,9 @@
 - RAM 64 GB.
 - GPU with 8GB or more. If you don't have this, set flag server=cpu
 - HDD 2TB or more for store data.
+- CPU:
+-     AMD EPYC 7763 64-Core Processor for 13 second per request.
+-     Intel® Xeon® Gold 6438M for 5-7 second per request.
 
 ## №2 Requirements
 
