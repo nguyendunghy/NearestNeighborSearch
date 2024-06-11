@@ -25,7 +25,7 @@ def build_ivf(vectors_dir, dim, metric, build_with_gpu):
     """
     load npy files and build index
     """
-    npy_filenames = list(sorted(list(Path(vectors_dir).glob('*.npy'))))
+    npy_filenames = list(sorted(list(Path(vectors_dir).rglob('*.npy'))))
 
     vectors = load_data(npy_filenames[0], metric)
     metric = faiss.METRIC_L2 if metric == 'l2' else faiss.METRIC_INNER_PRODUCT
