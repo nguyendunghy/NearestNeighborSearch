@@ -37,6 +37,7 @@ def predict():
     if request.is_json:
         data = request.get_json()
         input_data = data['list_text']
+        print(f'start predicting {len(input_data)} texts')
         query_vectors = model.predict(input_data)
         result = nn.find(query_vectors)
         print(f"time loading {int(time.time_ns() - start_time):,} nanosecond")
