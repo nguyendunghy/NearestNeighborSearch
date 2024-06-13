@@ -21,7 +21,7 @@ args = parse()
 
 app = Flask(__name__)
 model = Model(model_name_or_path=args.model_name_or_path)
-nn = NearestNeighbor(vectors_dir=args.npy_dir, dim=384, metric=args.metric, build_with_gpu=args.server == 'gpu')
+nn = NearestNeighbor(vectors_dir=args.npy_dir, dim=384, build_with_gpu=args.server == 'gpu')
 
 
 @app.route("/")
