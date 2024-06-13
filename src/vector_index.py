@@ -42,9 +42,16 @@ def process_block(npy_filename, index_path):
     vectors = load_data(npy_filename)
 
     index = faiss.read_index("trained_block.index")
+
+    res = faiss.StandardGpuResources()
+    co = faiss.GpuClonerOptions()
+    co.useFloat16 = True
+    index = faiss.index_cpu_to_gpu(res, 0, index, co)
+
     assert index.is_trained
     index.add(vectors)
 
+    index = faiss.index_gpu_to_cpu(index)
     faiss.write_index(index, str(index_path))
 
 
@@ -57,7 +64,7 @@ def build_ivf(vectors_dir, dim, indexes_dir, build_with_gpu):
     if not Path("trained_block.index").exists():
         build_trained_vector_index(npy_filenames[0], dim, build_with_gpu, indexes_dir)
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=1) as executor:
         futures = []
         for npy_filename in tqdm.tqdm(sorted(npy_filenames)):
             index_path = indexes_dir / f"{npy_filename.stem}.index"
