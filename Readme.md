@@ -3,11 +3,8 @@
 ## №1 Server requirements
 
 - RAM 64 GB.
-- GPU with 8GB or more. If you don't have this, set flag server=cpu
+- GPU 4090
 - HDD 2TB or more for store data.
-- CPU:
--     AMD EPYC 7763 64-Core Processor for 13 second per request.
--     Intel® Xeon® Gold 6438M for 5-7 second per request.
 
 ## №2 Requirements
 
@@ -38,8 +35,10 @@ conda install -c conda-forge sentence-transformers
 Run server
 
 ```shell
-conda run --no-capture-output python app.py --npy-dir ../data --server gpu
+CUDA_VISIBLE_DEVICES=0 conda run --no-capture-output python app.py --npy-dir ../data --server gpu
 ```
+
+CUDA_VISIBLE_DEVICES=N [N=0,1,2,3,4,5,6,7]
 
 ## №3 Running
 
