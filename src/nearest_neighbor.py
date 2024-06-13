@@ -50,7 +50,7 @@ class NearestNeighbor:
 
         # set how many probes to use. it increases quality
         self._index.nprobe = 16
-        faiss.omp_set_num_threads(1)
+        faiss.omp_set_num_threads(16)
 
     def find(self, query_vectors, k=1):
         distances, indexes = self._index.search(query_vectors, k=k)

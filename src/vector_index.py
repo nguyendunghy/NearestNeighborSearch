@@ -18,7 +18,7 @@ def build_trained_vector_index(npy_filename, dim, build_with_gpu, indexes_dir):
     vectors = load_data(npy_filename)
 
     # index is needed in a lot of count of clusters if dataset is big.
-    index = faiss.index_factory(dim, "IVF262144,PQ64", faiss.METRIC_L2)  # 65536   262144
+    index = faiss.index_factory(dim, "IVF1048576,PQ64", faiss.METRIC_L2)  # 65536   262144   1048576
 
     index_ivf = faiss.extract_index_ivf(index)
 
@@ -64,16 +64,6 @@ def build_ivf(vectors_dir, dim, indexes_dir, build_with_gpu):
     if not Path("trained_block.index").exists():
         build_trained_vector_index(npy_filenames[0], dim, build_with_gpu, indexes_dir)
 
-    with concurrent.futures.ProcessPoolExecutor(max_workers=1) as executor:
-        futures = []
-        for npy_filename in tqdm.tqdm(sorted(npy_filenames)):
-            index_path = indexes_dir / f"{npy_filename.stem}.index"
-            future = executor.submit(process_block, npy_filename, index_path)
-            futures.append(future)
-
-        # Wait for all futures to complete
-        for future in tqdm.tqdm(concurrent.futures.as_completed(futures), total=len(futures)):
-            try:
-                future.result()  # this will raise an exception if the function raised
-            except Exception as e:
-                print(f"Error processing file {npy_filename}: {e}")
+    for npy_filename in tqdm.tqdm(sorted(npy_filenames)):
+        index_path = indexes_dir / f"{npy_filename.stem}.index"
+        process_block(npy_filename, index_path)
