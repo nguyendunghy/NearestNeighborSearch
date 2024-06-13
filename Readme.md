@@ -30,6 +30,7 @@ install requirements
 
 ```shell
 conda install -c pytorch -c nvidia faiss-gpu=1.8.0
+conda install pytorch pytorch-cuda=12.1 -c pytorch -c nvidia
 conda install flask
 conda install -c conda-forge sentence-transformers
 ```

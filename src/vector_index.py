@@ -1,4 +1,3 @@
-import concurrent.futures
 from pathlib import Path
 
 import faiss
