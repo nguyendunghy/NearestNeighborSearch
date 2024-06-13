@@ -14,6 +14,7 @@ def parse():
     parser.add_argument('--model_name_or_path', type=str, default='sentence-transformers/all-MiniLM-L12-v2')
     parser.add_argument('--server', type=str, default='gpu', choices=['gpu', 'cpu'], required=True,
                         help='Choose a backend that construct index.')
+    parser.add_argument('--port', type=int, default=8080, help='Port to run the server on.')
     return parser.parse_args()
 
 
@@ -44,4 +45,4 @@ def predict():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=False, port=8080)
+    app.run(host='0.0.0.0', debug=False, port=args.port)
