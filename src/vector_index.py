@@ -54,7 +54,8 @@ def build_ivf(vectors_dir, dim, indexes_dir, build_with_gpu):
     """
     npy_filenames = list(sorted(list(Path(vectors_dir).glob('*.npy'))))
 
-    build_trained_vector_index(npy_filenames[0], dim, build_with_gpu, indexes_dir)
+    if not Path("trained_block.index").exists():
+        build_trained_vector_index(npy_filenames[0], dim, build_with_gpu, indexes_dir)
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
         futures = []

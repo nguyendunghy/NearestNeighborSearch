@@ -3,7 +3,7 @@ from pathlib import Path
 import faiss
 import numpy as np
 
-from vector_index import build_ivf
+from src.vector_index import build_ivf
 
 indexes_dir = Path('indexes')
 
