@@ -3,7 +3,7 @@
 ## №1 Server requirements
 
 - RAM 64 GB.
-- GPU with 8GB or more. If you don't have this, set flag server=cpu
+- GPU 4090
 - HDD 2TB or more for store data.
 
 ## №2 Requirements
@@ -27,6 +27,7 @@ install requirements
 
 ```shell
 conda install -c pytorch -c nvidia faiss-gpu=1.8.0
+conda install pytorch pytorch-cuda=12.1 -c pytorch -c nvidia
 conda install flask
 conda install -c conda-forge sentence-transformers
 ```
@@ -34,9 +35,10 @@ conda install -c conda-forge sentence-transformers
 Run server
 
 ```shell
-conda run --no-capture-output python app.py --npy-dir ../data --server gpu
-
+CUDA_VISIBLE_DEVICES=0 conda run --no-capture-output python app.py --npy-dir ../data --server gpu
 ```
+
+CUDA_VISIBLE_DEVICES=N [N=0,1,2,3,4,5,6,7]
 
 ## №3 Running
 

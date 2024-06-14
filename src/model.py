@@ -9,7 +9,7 @@ class Model:
         self._model = SentenceTransformer(
             model_name_or_path,
             trust_remote_code=True,
-            device='cpu'
+            device='cuda'
         )
 
     def predict(self, sentences: List[str]):

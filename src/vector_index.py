@@ -4,34 +4,20 @@ import faiss
 import tqdm
 import numpy as np
 
-indexes_dir = Path('indexes')
 
-
-def norm(data):
-    return data / np.linalg.norm(data)
-
-
-def load_data(npy_filename, metric):
+def load_data(npy_filename):
     """
     load npy file and return vectors. Preprocess vector by type of metric
     """
     vectors = np.load(npy_filename, mmap_mode='c')
-    if metric == 'cosine':
-        vectors = norm(vectors)
     return vectors
 
 
-def build_ivf(vectors_dir, dim, metric, build_with_gpu):
-    """
-    load npy files and build index
-    """
-    npy_filenames = list(sorted(list(Path(vectors_dir).rglob('*.npy'))))
-
-    vectors = load_data(npy_filenames[0], metric)
-    metric = faiss.METRIC_L2 if metric == 'l2' else faiss.METRIC_INNER_PRODUCT
+def build_trained_vector_index(npy_filename, dim, build_with_gpu, indexes_dir):
+    vectors = load_data(npy_filename)
 
     # index is needed in a lot of count of clusters if dataset is big.
-    index = faiss.index_factory(dim, "IVF65536,Flat", metric)  # 65536
+    index = faiss.index_factory(dim, "IVF1048576,PQ64", faiss.METRIC_L2)  # 65536   262144   1048576
 
     index_ivf = faiss.extract_index_ivf(index)
 
@@ -50,61 +36,33 @@ def build_ivf(vectors_dir, dim, metric, build_with_gpu):
     indexes_dir.mkdir(parents=True, exist_ok=True)
     faiss.write_index(index, "trained_block.index")
 
+
+def process_block(npy_filename, index_path):
+    vectors = load_data(npy_filename)
+
+    index = faiss.read_index("trained_block.index")
+
+    res = faiss.StandardGpuResources()
+    co = faiss.GpuClonerOptions()
+    co.useFloat16 = True
+    index = faiss.index_cpu_to_gpu(res, 0, index, co)
+
+    assert index.is_trained
+    index.add(vectors)
+
+    index = faiss.index_gpu_to_cpu(index)
+    faiss.write_index(index, str(index_path))
+
+
+def build_ivf(vectors_dir, dim, indexes_dir, build_with_gpu):
+    """
+    load npy files and build index
+    """
+    npy_filenames = list(sorted(list(Path(vectors_dir).glob('*.npy'))))
+
+    if not Path("trained_block.index").exists():
+        build_trained_vector_index(npy_filenames[0], dim, build_with_gpu, indexes_dir)
+
     for npy_filename in tqdm.tqdm(sorted(npy_filenames)):
-        vectors = load_data(npy_filename, metric)
-
-        index = faiss.read_index("trained_block.index")
-        assert index.is_trained
-        index.add(vectors)
-
         index_path = indexes_dir / f"{npy_filename.stem}.index"
-        faiss.write_index(index, str(index_path))
-
-
-class FaissIndex:
-    def __init__(self, vectors_dir, dim, metric, build_with_gpu: bool = True):
-        self._dim = dim
-        self._metric = metric
-
-        faiss.omp_set_num_threads(16)
-
-        # 1. build index for every npy blocks
-        ivf_filepaths = list(indexes_dir.glob('*.index'))
-        if not Path('trained_block.index').exists():
-            build_ivf(vectors_dir, dim, metric, build_with_gpu)
-
-        # 2. merge all ivf indexes into one
-        if not Path("populated.index").exists():
-            ivfs = []
-            for ivf_filepath in ivf_filepaths:
-                index = faiss.read_index(str(ivf_filepath), faiss.IO_FLAG_MMAP)
-                ivfs.append(index.invlists)
-                index.own_invlists = False
-
-            index = faiss.read_index("trained_block.index")
-            invlists = faiss.OnDiskInvertedLists(index.nlist, index.code_size, "merged_index.ivfdata")
-            ivf_vector = faiss.InvertedListsPtrVector()
-
-            for ivf in ivfs:
-                ivf_vector.push_back(ivf)
-
-            ntotal = invlists.merge_from(ivf_vector.data(), ivf_vector.size())
-            index.ntotal = ntotal  # заменяем листы индекса на объединенные
-            index.replace_invlists(invlists)
-            faiss.write_index(index, "populated.index")
-
-        # 3. read ready index to memory.
-        self._index = faiss.read_index('populated.index', faiss.IO_FLAG_ONDISK_SAME_DIR)
-
-        # set how many probes to use. it increases quality
-        self._index.nprobe = 256
-
-    def query(self, query_vectors, k=1):
-        if self._metric == 'cosine':
-            query_vectors = norm(query_vectors)
-        distances, indexes = self._index.search(query_vectors, k=k)
-        return distances
-
-
-if __name__ == '__main__':
-    index = FaissIndex(vectors_dir='data', metric='l2', dim=384, build_with_gpu=True)
+        process_block(npy_filename, index_path)

@@ -14,8 +14,7 @@ def parse():
     parser.add_argument('--model_name_or_path', type=str, default='sentence-transformers/all-MiniLM-L12-v2')
     parser.add_argument('--server', type=str, default='gpu', choices=['gpu', 'cpu'], required=True,
                         help='Choose a backend that construct index.')
-    parser.add_argument('--port', type=int, default=8080)
-
+    parser.add_argument('--port', type=int, default=8080, help='Port to run the server on.')
     return parser.parse_args()
 
 
@@ -23,7 +22,7 @@ args = parse()
 
 app = Flask(__name__)
 model = Model(model_name_or_path=args.model_name_or_path)
-nn = NearestNeighbor(vectors_dir=args.npy_dir, dim=384, metric=args.metric, build_with_gpu=args.server == 'gpu')
+nn = NearestNeighbor(vectors_dir=args.npy_dir, dim=384, build_with_gpu=args.server == 'gpu')
 
 
 @app.route("/")
